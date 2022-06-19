@@ -6,26 +6,7 @@ export let usersDb: {
     username: string;
     age: number;
     hobbies: string[];
-}[] = [
-    {
-        id: '56baf70b-02b4-44ac-99b9-764012c61950',
-        username: 'demo user one',
-        age: 12,
-        hobbies: ['fun', 'jokes'],
-    },
-    {
-        id: uuidv4(),
-        username: 'User two',
-        age: 12,
-        hobbies: ['run', 'sport'],
-    },
-    {
-        id: uuidv4(),
-        username: 'User three',
-        age: 12,
-        hobbies: ['gaming', 'sleep'],
-    },
-];
+}[] = [];
 export const db = () => {
     console.log('Modules compiled');
 };
