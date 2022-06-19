@@ -14,17 +14,40 @@ db.add({ id: db.id, username: `User ${db.id}` });
 // db.usersDb.push(user4);
 
 server.on('request', (req, res) => {
-    const reqUrl: string | undefined = req.url;
+    // const reqUrl: string | undefined = req.url;
+    const reqUrl = new URL(req.url, `http://${req.headers.host}`);
+    console.log(req.url);
+    console.log(reqUrl.pathname);
+    console.log(reqUrl.search);
+    console.log(reqUrl.searchParams);
+    console.log(reqUrl.searchParams.get('username'));
     const items: any = req.url?.split('/');
 
     switch (true) {
-        case reqUrl === '/api/users' && req.method === 'GET':
+        case req.method === 'POST':
+            const userName = reqUrl.searchParams.get('username');
+            // const body = [];
+            respond(res, 201, 'html');
+            // req.on('data', (data) => {
+            //     body.push(Buffer.from(data));
+            // });
+            // req.on('end', () => {
+            //     console.log(body);
+            // });
+
+            db.add({
+                id: db.id,
+                username: userName,
+            });
+            res.write(`<h3>${userName} id №${db.id - 1} added</h3>`);
+            res.end();
+            break;
+        case reqUrl.pathname === '/api/users' && req.method === 'GET':
             respond(res, 200, 'json');
             res.end(JSON.stringify(db.usersDb));
             break;
 
-        case `/${items[1]}/${items[2]}/` === '/api/users/' &&
-            items.length === 4:
+        case `/${items[1]}/${items[2]}` === '/api/users' && items.length === 4:
             const userIndex: number = Number(items[3]);
 
             if (!checkUserID(res, items[3])) break;
@@ -33,12 +56,7 @@ server.on('request', (req, res) => {
                 respond(res, 200, 'json');
                 res.end(JSON.stringify(db.usersDb[userIndex]));
             }
-            if (req.method === 'POST') {
-                respond(res, 201, 'json');
 
-                //todo POST
-                res.end();
-            }
             if (req.method === 'PUT') {
                 respond(res, 201, 'json');
 
