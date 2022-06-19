@@ -1,47 +1,68 @@
 import * as http from 'http';
+import * as querystring from 'querystring';
 
 import * as db from './modules/db.js';
 
 const PORT = 3000;
 const server = http.createServer();
-db.db();
 
-db.add({ id: db.id, username: `User ${db.id}` });
-db.add({ id: db.id, username: `User ${db.id}` });
-db.add({ id: db.id, username: `User ${db.id}` });
-db.add({ id: db.id, username: `User ${db.id}` });
-
-// db.usersDb.push(user4);
+console
+    .log
+    // JSON.parse('{ "name": 'Test user', age: 22, hobbies: ['TEST1', 'hobbie2'] }')
+    ();
 
 server.on('request', (req, res) => {
     // const reqUrl: string | undefined = req.url;
     const reqUrl = new URL(req.url, `http://${req.headers.host}`);
-    console.log(req.url);
-    console.log(reqUrl.pathname);
-    console.log(reqUrl.search);
-    console.log(reqUrl.searchParams);
-    console.log(reqUrl.searchParams.get('username'));
+
     const items: any = req.url?.split('/');
 
     switch (true) {
         case req.method === 'POST':
-            const userName = reqUrl.searchParams.get('username');
-            // const body = [];
-            respond(res, 201, 'html');
-            // req.on('data', (data) => {
-            //     body.push(Buffer.from(data));
-            // });
-            // req.on('end', () => {
-            //     console.log(body);
-            // });
+            let rawData = '';
 
-            db.add({
-                id: db.id,
-                username: userName,
+            req.on('data', (chunk) => {
+                rawData += chunk.toString();
             });
-            res.write(`<h3>${userName} id №${db.id - 1} added</h3>`);
-            res.end();
+            req.on('end', async () => {
+                try {
+                    const { username, age, hobbies } = JSON.parse(rawData);
+                    console.log(username, age, hobbies);
+                    if (!username || !age || !Array.isArray(hobbies)) {
+                        respond(res, 400, 'html');
+
+                        if (!username)
+                            res.write(`<h3>userName is required </h3>`);
+                        if (!age)
+                            res.write(
+                                `<h3>Age is required and must be a number </h3>`
+                            );
+                        if (!Array.isArray(hobbies))
+                            res.write(
+                                `<h3>Hobbies must be an Array or empty array</h3>`
+                            );
+                    } else {
+                        respond(res, 201, 'html');
+
+                        db.add({
+                            id: db.id,
+                            username: username,
+                            age: age,
+                            hobbies: hobbies,
+                        });
+                        res.write(
+                            `<h3>${username} id №${db.id - 1} added</h3>`
+                        );
+                    }
+                } catch (error) {
+                    respond(res, 400, 'html');
+                    res.write(`<h3>JSON Error</h3>`);
+                }
+                res.end();
+            });
+
             break;
+
         case reqUrl.pathname === '/api/users' && req.method === 'GET':
             respond(res, 200, 'json');
             res.end(JSON.stringify(db.usersDb));
