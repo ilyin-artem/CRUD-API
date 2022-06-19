@@ -3,10 +3,12 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
+    "type": "module",
     "scripts": {
-        "dev": "nodemon",
-        "build": "tsc index.ts",
-        "start": "ts-node index.ts"
+        "prod": "tsc",
+        "start": "ts-node ./src/index.ts",
+        "compile": "tsc && node ./build/index.js",
+        "dev": "nodemon -e ts  --exec \"npm run compile\""
     },
     "repository": {
         "type": "git",

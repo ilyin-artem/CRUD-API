@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "module": "ES6", // or ES2015, ES2020, ESNext, ES6 для фронтенда, commonjs
+
+        "rootDir": "./src",
+        "outDir": "./build",
+        "removeComments": true,
+        "moduleResolution": "Node",
+        "forceConsistentCasingInFileNames": true,
+        "esModuleInterop": true
+        // "resolveJsonModule": true,
+    },
+    "include": [
+        "./src/**/*"
+        // "tests/**/*"
+    ],
+    "ts-node": {
+        // Tell ts-node CLI to install the --loader automatically, explained below
+        "esm": true
+    }
+}
