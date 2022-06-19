@@ -12,8 +12,9 @@
         // "resolveJsonModule": true,
     },
     "include": [
-        "./src/**/*"
-        // "tests/**/*"
+        "./src/**/*",
+        "src/modules/index.ts", // "tests/**/*"
+        "multi.ts"
     ],
     "ts-node": {
         // Tell ts-node CLI to install the --loader automatically, explained below
